@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <hgroup>
+      <h1>Inventory</h1>
+      <p>Everything on your shelves, in one place.</p>
+    </hgroup>
+    <a href="{{ url_for('new_item') }}" role="button">+ Add item</a>
+  </div>
+
+  {# The data-stat names let app.js update these numbers after a − / + click #}
+  <div class="stats">
+    <div class="stat lavender">
+      <span>Products</span>
+      <strong data-stat="products">{{ stats.products }}</strong>
+    </div>
+    <div class="stat sky">
+      <span>Units in stock</span>
+      <strong data-stat="units">{{ stats.units }}</strong>
+    </div>
+    <div class="stat mint">
+      <span>Stock value</span>
+      <strong data-stat="stock_value">{{ stats.stock_value }}</strong>
+    </div>
+    <div class="stat peach">
+      <span>Need restocking</span>
+      <strong data-stat="restock">{{ stats.restock }}</strong>
+    </div>
+  </div>
+
+  {% if items %}
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search by name, SKU or category"
+             aria-label="Search items" autocomplete="off">
+      <label>
+        <input type="checkbox" role="switch" id="low-stock-only">
+        Low stock only
+      </label>
+    </div>
+
+    <article class="table-card">
+      <div class="overflow-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th class="num">Price</th>
+              <th>In stock</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+              {% set status = stock_status(item) %}
+              <tr data-status="{{ status }}"
+                  data-search="{{ [item.name, item.sku or '', item.category] | join(' ') | lower }}"
+                  data-stock-url="{{ url_for('change_stock', item_id=item.id) }}">
+                <td>
+                  <strong>{{ item.name }}</strong>
+                  {% if item.sku %}<small class="sku">{{ item.sku }}</small>{% endif %}
+                </td>
+                <td class="hide-on-phone">{{ item.category or "—" }}</td>
+                <td class="num hide-on-phone">{{ item.price | money }}</td>
+                <td>
+                  <div class="stepper">
+                    <button type="button" data-amount="-1" aria-label="Remove one"
+                            {% if item.quantity == 0 %}disabled{% endif %}>−</button>
+                    <span class="qty">{{ item.quantity }}</span>
+                    <button type="button" data-amount="1" aria-label="Add one">+</button>
+                  </div>
+                </td>
+                <td><span class="badge {{ status }}">{{ status_labels[status] }}</span></td>
+                <td class="actions">
+                  <a href="{{ url_for('edit_item', item_id=item.id) }}" aria-label="Edit {{ item.name }}">Edit</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p id="no-matches" class="no-matches" hidden>Nothing matches that search.</p>
+    </article>
+
+  {% else %}
+    <article class="empty">
+      <h2>Your shelves are empty</h2>
+      <p>Add your first item and it'll show up here.</p>
+      <a href="{{ url_for('new_item') }}" role="button">+ Add your first item</a>
+    </article>
+  {% endif %}
+{% endblock %}

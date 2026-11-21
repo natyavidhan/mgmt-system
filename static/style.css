@@ -1,0 +1,477 @@
+/*
+  Stockroom's look: a soft pastel theme on top of Pico.css.
+
+  Pico (static/vendor/pico.min.css) already styles forms, buttons and tables.
+  This file swaps in our colours and adds the few extra pieces the app needs:
+  stat cards, stock badges, the − / + stepper, toasts and the login screen.
+*/
+
+
+/* 1. Colours ------------------------------------------------------------------ */
+
+/* Pico puts its light-theme colours on `:root:not([data-theme=dark])`.
+   Our <html> tag has data-theme="light", so this selector is just as specific,
+   and because this file loads after Pico, our values win. */
+:root[data-theme="light"] {
+  /* The palette */
+  --cream:    #fdfbf7;
+  --lavender: #ece7ff;
+  --lilac:    #d6ccff;
+  --mint:     #d9f5e8;
+  --sky:      #dcecff;
+  --peach:    #ffe5d6;
+  --butter:   #fff2c6;
+  --rose:     #ffdfe9;
+
+  --ink:      #3b3650;  /* text */
+  --ink-soft: #686380;  /* quieter text */
+  --line:     #ebe7f3;  /* borders */
+
+  /* ...and how Pico should use it */
+  --pico-font-size: 100%;  /* Pico enlarges text on wide screens; keep it steady */
+  --pico-border-radius: 0.75rem;
+
+  --pico-background-color: var(--cream);
+  --pico-color: var(--ink);
+  --pico-h1-color: var(--ink);
+  --pico-h2-color: var(--ink);
+  --pico-muted-color: var(--ink-soft);
+  --pico-muted-border-color: var(--line);
+
+  /* links */
+  --pico-primary: #6553c7;
+  --pico-primary-hover: #4d3da8;
+  --pico-primary-underline: rgba(101, 83, 199, 0.35);
+
+  /* buttons */
+  --pico-primary-background: var(--lilac);
+  --pico-primary-border: var(--lilac);
+  --pico-primary-hover-background: #c6baff;
+  --pico-primary-hover-border: #c6baff;
+  --pico-primary-focus: rgba(150, 130, 255, 0.35);
+  --pico-primary-inverse: var(--ink);
+
+  --pico-secondary: var(--ink-soft);
+  --pico-secondary-background: #f1eef8;
+  --pico-secondary-border: #f1eef8;
+  --pico-secondary-hover: var(--ink);
+  --pico-secondary-hover-background: #e6e2f1;
+  --pico-secondary-hover-border: #e6e2f1;
+  --pico-secondary-focus: rgba(104, 99, 128, 0.2);
+  --pico-secondary-inverse: var(--ink);
+
+  /* cards */
+  --pico-card-background-color: #fff;
+  --pico-card-border-color: var(--line);
+  --pico-card-box-shadow: 0 1px 2px rgba(59, 54, 80, 0.04), 0 12px 32px rgba(59, 54, 80, 0.06);
+
+  /* inputs */
+  --pico-form-element-background-color: #fff;
+  --pico-form-element-border-color: #e3def0;
+  --pico-form-element-active-border-color: #b9abff;
+  --pico-form-element-focus-color: rgba(150, 130, 255, 0.3);
+  --pico-form-element-invalid-border-color: #f2a7c0;
+  --pico-form-element-invalid-active-border-color: #e47fa3;
+  --pico-del-color: #a3305a;  /* error text under an input */
+  --pico-switch-background-color: #e3def0;
+  --pico-switch-checked-background-color: #a998ff;
+
+  --pico-table-border-color: var(--line);
+}
+
+
+/* 2. Page layout -------------------------------------------------------------- */
+
+body > main {
+  padding-block: 2rem 4rem;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-block: 0.25rem;
+  border-bottom: 1px solid var(--line);
+  background: rgba(253, 251, 247, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.topbar a {
+  text-decoration: none;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.brand img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.greeting {
+  color: var(--ink-soft);
+}
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.page-head hgroup {
+  margin: 0;
+}
+
+
+/* 3. Stat cards --------------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+}
+
+.stat span {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.stat strong {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lavender { background: var(--lavender); }
+.sky      { background: var(--sky); }
+.mint     { background: var(--mint); }
+.peach    { background: var(--peach); }
+
+
+/* 4. Search bar and table ----------------------------------------------------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.toolbar input[type="search"] {
+  flex: 1 1 16rem;
+  margin: 0;
+}
+
+.toolbar label {
+  width: auto;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-card table {
+  margin: 0;
+}
+
+th,
+td {
+  vertical-align: middle;
+  background-color: transparent;
+}
+
+th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background-color: #faf8ff;
+}
+
+tbody tr:hover {
+  background-color: #fcfbff;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sku {
+  display: block;
+  color: var(--ink-soft);
+}
+
+.actions {
+  text-align: right;
+}
+
+.actions a {
+  text-decoration: none;
+}
+
+.no-matches {
+  margin: 0;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 2px dashed var(--lilac);
+  background: transparent;
+  box-shadow: none;
+}
+
+
+/* 5. The − / + stepper -------------------------------------------------------- */
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.stepper button {
+  width: 1.9rem;
+  height: 1.9rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.stepper button[data-amount="-1"] { --pico-background-color: var(--rose); }
+.stepper button[data-amount="1"]  { --pico-background-color: var(--mint); }
+.stepper button:hover             { filter: brightness(0.95); }
+
+/* Only show the focus ring for keyboard users, not after every click */
+.stepper button:focus:not(:focus-visible) {
+  --pico-box-shadow: none;
+}
+
+.qty {
+  min-width: 2.5ch;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* 6. Stock badges ------------------------------------------------------------- */
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge.ok  { background: var(--mint);   color: #23684a; }
+.badge.low { background: var(--butter); color: #7d5800; }
+.badge.out { background: var(--rose);   color: #a3305a; }
+
+
+/* 7. Add / edit item form ----------------------------------------------------- */
+
+.narrow {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+.narrow article {
+  padding: 1.75rem 2rem 2rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.optional {
+  margin-left: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.form-actions button,
+.form-actions [role="button"] {
+  width: auto;
+  margin: 0;
+}
+
+.form-error {
+  padding: 0.75rem 1rem;
+  border-radius: var(--pico-border-radius);
+  background: var(--rose);
+  color: #a3305a;
+}
+
+.delete-form {
+  text-align: center;
+}
+
+.delete-form .danger {
+  --pico-background-color: transparent;
+  --pico-border-color: transparent;
+  --pico-color: #a3305a;
+  width: auto;
+}
+
+.delete-form .danger:is(:hover, :focus) {
+  --pico-background-color: var(--rose);
+  --pico-border-color: var(--rose);
+  --pico-color: #a3305a;
+}
+
+
+/* 8. Toasts (the little "Saved!" messages) ------------------------------------ */
+
+.toasts {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  z-index: 20;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  margin: 0.5rem 0 0;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  background: var(--mint);
+  color: #23684a;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(59, 54, 80, 0.12);
+  animation: toast-in 0.3s ease-out;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+.toast.hide {  /* app.js adds this after a few seconds */
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(0.75rem); }
+}
+
+
+/* 9. Login and setup screen --------------------------------------------------- */
+
+body.auth {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 20%, var(--lavender), transparent 40%),
+    radial-gradient(circle at 85% 15%, var(--mint), transparent 35%),
+    radial-gradient(circle at 80% 85%, var(--peach), transparent 40%),
+    radial-gradient(circle at 10% 90%, var(--sky), transparent 35%),
+    var(--cream);
+}
+
+body.auth main {
+  width: 100%;
+  max-width: 26rem;
+}
+
+.auth-card {
+  padding: 2.25rem 2rem 1.25rem;
+}
+
+.auth-card h1 {
+  --pico-font-size: 1.75rem;
+}
+
+.auth-logo {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1.25rem;
+}
+
+.auth-card button {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+
+/* 10. Phones ------------------------------------------------------------------ */
+
+/* On narrow screens each table row becomes a small card: the item name and
+   the − / + buttons on top, the stock badge and Edit link underneath.
+   Category and price are hidden to make room (they're on the Edit page). */
+@media (max-width: 767px) {
+  .greeting,
+  .hide-on-phone,
+  .table-card thead {
+    display: none;
+  }
+
+  .table-card table,
+  .table-card tbody {
+    display: block;
+  }
+
+  .table-card tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .table-card tr:last-child {
+    border-bottom: 0;
+  }
+
+  .table-card td {
+    padding: 0;
+    border: 0;
+  }
+}

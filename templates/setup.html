@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Set up{% endblock %}
+{% block body_class %}auth{% endblock %}
+
+{% block content %}
+  <article class="auth-card">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="" class="auth-logo">
+
+    <hgroup>
+      <h1>Hello there!</h1>
+      <p>Create your account to start tracking stock.</p>
+    </hgroup>
+
+    {% if error %}
+      <p class="form-error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+      <label>
+        Username
+        <input name="username" value="{{ request.form.get('username', '') }}"
+               autocomplete="username" required autofocus>
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" autocomplete="new-password"
+               minlength="6" required>
+      </label>
+      <label>
+        Confirm password
+        <input type="password" name="confirm_password" autocomplete="new-password" required>
+      </label>
+      <button type="submit">Create account</button>
+    </form>
+  </article>
+{% endblock %}

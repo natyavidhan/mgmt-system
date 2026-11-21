@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{#
+  One form for both adding and editing an item.
+    item    the item being edited, or None when adding a new one
+    values  what goes in the inputs (the saved item, or what was just typed)
+    errors  {field name: message} for anything that needs fixing
+#}
+{% block title %}{{ "Edit item" if item else "Add item" }}{% endblock %}
+
+{% block content %}
+  <div class="narrow">
+    <a href="{{ url_for('inventory') }}" class="back-link">← Back to inventory</a>
+
+    <article>
+      <hgroup>
+        <h2>{{ "Edit item" if item else "Add an item" }}</h2>
+        <p>{{ "Change anything below, then save." if item else "Only the name and price are needed. Fill in the rest whenever." }}</p>
+      </hgroup>
+
+      <form method="post">
+        <label>
+          Name
+          <input name="name" value="{{ values.name }}" maxlength="100" required
+                 {% if not item %}autofocus{% endif %}
+                 {% if errors.name %}aria-invalid="true"{% endif %}>
+          {% if errors.name %}<small>{{ errors.name }}</small>{% endif %}
+        </label>
+
+        <div class="grid">
+          <label>
+            SKU / barcode <span class="optional">optional</span>
+            <input name="sku" value="{{ values.sku or '' }}" maxlength="50"
+                   {% if errors.sku %}aria-invalid="true"{% endif %}>
+            {% if errors.sku %}<small>{{ errors.sku }}</small>{% endif %}
+          </label>
+          <label>
+            Category <span class="optional">optional</span>
+            <input name="category" value="{{ values.category or '' }}" maxlength="50"
+                   list="categories">
+            <datalist id="categories">
+              {% for category in categories %}
+                <option value="{{ category }}">
+              {% endfor %}
+            </datalist>
+          </label>
+        </div>
+
+        <div class="grid">
+          <label>
+            Price ({{ currency }})
+            <input type="number" name="price" value="{{ values.price }}" min="0" step="0.01" required
+                   {% if errors.price %}aria-invalid="true"{% endif %}>
+            {% if errors.price %}<small>{{ errors.price }}</small>{% endif %}
+          </label>
+          <label>
+            In stock
+            <input type="number" name="quantity" value="{{ values.quantity }}" min="0" step="1" required
+                   {% if errors.quantity %}aria-invalid="true"{% endif %}>
+            {% if errors.quantity %}<small>{{ errors.quantity }}</small>{% endif %}
+          </label>
+          <label>
+            Low-stock alert at
+            <input type="number" name="low_stock_at" value="{{ values.low_stock_at }}" min="0" step="1" required
+                   {% if errors.low_stock_at %}aria-invalid="true"{% endif %}>
+            <small>{{ errors.low_stock_at or "Flag it at this many or fewer." }}</small>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">{{ "Save changes" if item else "Add item" }}</button>
+          <a href="{{ url_for('inventory') }}" role="button" class="secondary">Cancel</a>
+        </div>
+      </form>
+    </article>
+
+    {% if item %}
+      <form method="post" action="{{ url_for('delete_item', item_id=item.id) }}" class="delete-form"
+            data-confirm="Delete {{ item.name }}? This can't be undone.">
+        <button type="submit" class="danger">Delete this item</button>
+      </form>
+    {% endif %}
+  </div>
+{% endblock %}
