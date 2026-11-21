@@ -1,9 +1,11 @@
-<img src="assets/icon.svg" width="64" height="64" alt="">
+<img src="static/logo.svg" width="64" height="64" alt="Stockroom logo">
 
 # Stockroom
 
 A small, friendly inventory manager for small shops.
 Python, Flask and SQLite on the back end; plain HTML, CSS and JavaScript on the front, styled with [Pico.css](https://picocss.com) and a pastel theme.
+
+![The inventory page](assets/screenshots/inventory.png)
 
 ## What it does
 
@@ -13,6 +15,16 @@ Python, Flask and SQLite on the back end; plain HTML, CSS and JavaScript on the 
 - **Add, edit and delete items**: name, SKU or barcode, category, price, quantity and a low-stock alert level.
 - **Live search** and a *Low stock only* switch for making a restock list.
 - **Totals at a glance**: products, units in stock, stock value and how many items need restocking.
+
+## Screenshots
+
+| Log in | Add an item |
+| --- | --- |
+| ![The login screen](assets/screenshots/login.jpg) | ![Adding a new item](assets/screenshots/add-item.png) |
+
+On a phone, each item turns into a card:
+
+<img src="assets/screenshots/phone.png" width="300" alt="The inventory page on a phone">
 
 ## Run it
 
